@@ -9,6 +9,8 @@ import os
 MQTT_BROKER = os.environ.get('MQTT_BROKER')
 MQTT_PORT   = int(os.environ.get('MQTT_PORT'))
 MQTT_TOPIC  = os.environ.get('MQTT_TOPIC')
+MQTT_USERNAME = os.environ.get('MQTT_USERNAME')
+MQTT_PASSWORD = os.environ.get('MQTT_PASSWORD')
 
 INFLUXDB_URL    = os.environ.get('INFLUXDB_URL')
 INFLUXDB_TOKEN  = os.environ.get('INFLUXDB_TOKEN')
@@ -17,12 +19,12 @@ INFLUXDB_BUCKET = os.environ.get('INFLUXDB_BUCKET')
 
 
 
-def on_connect(client, userdata, flags, rc):
-    if rc == 0:
+def on_connect(client, userdata, flags, reasonCode, properties=None):
+    if reasonCode.is_failure:
+        print(f'failed to connect {reasonCode}')
+    else:
         print("connected to MQTT broker")
         client.subscribe(MQTT_TOPIC)
-    else:
-        print(f'failed to connect {rc}')
 
 
 def on_message(client, userdata, msg):
@@ -46,6 +48,11 @@ def on_message(client, userdata, msg):
         print(f"Failed to write: {e}")
 
 
+def on_subscribe(client, userdata, mid, reason_code_list, properties):
+    if reason_code_list[0].is_failure:
+        print(f"Broker rejected subscription")
+    else:
+        print(f"broker approved subscription")
 
 
 def main():
@@ -54,11 +61,13 @@ def main():
     write_api = influx_client.write_api(write_options=SYNCHRONOUS)
 
     # connect to mqtt broker
-    client = mqtt.Client()
-    client.user_data_set({"write_api": write_api})
+    client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
     client.on_connect = on_connect
     client.on_message = on_message
+    client.on_subscribe = on_subscribe
 
+    client.username_pw_set(MQTT_USERNAME, MQTT_PASSWORD)
+    client.user_data_set({"write_api": write_api})
     client.connect(MQTT_BROKER, MQTT_PORT, keepalive = 60)
 
 

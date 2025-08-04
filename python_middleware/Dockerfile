@@ -16,5 +16,5 @@ COPY middleware.py .
 # install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# run the script
-CMD ["python", "middleware.py"]
+# run the script  ->  -u for immediate printing
+CMD ["python", "-u", "middleware.py"]
