@@ -1,0 +1,9 @@
+.env
+
+mosquitto-docker/data/*
+mosquitto-docker/log/*
+mosquitto-docker/config/ca_certificates/*
+mosquitto-docker/config/certs/*
+mosquitto-docker/config/passwd
+
+influxdb/data/*
