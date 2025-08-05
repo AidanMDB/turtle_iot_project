@@ -36,3 +36,10 @@
     transform: rotate(360deg);
   }
 }
+
+
+.chart-container {
+  height: 400px;
+  width: 400px;
+  color: #282c34;
+}

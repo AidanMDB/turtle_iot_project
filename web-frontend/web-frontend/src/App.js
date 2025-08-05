@@ -1,12 +1,16 @@
 import logo from './logo.svg';
 import './App.css';
-import { ResponsiveLine } from '@nino/line';
+import { ResponsiveLine } from '@nivo/line';
 import axios from 'axios'
+import React, { useState, useEffect } from 'react';
+
+
 
 const MyLineChart = ({ data }) => {
+  return (
   <ResponsiveLine
     data={data}
-    margin={{ top: 20, right: 20, bottom: 60, left: 60 }}
+    margin={{ top: 100, right: 100, bottom: 200, left: 100 }}
     xScale={{ type: 'point' }}
     yScale={{ 
       type: 'linear', 
@@ -22,17 +26,27 @@ const MyLineChart = ({ data }) => {
     }}
     axisLeft={{
       orient: 'left',
-      legend: 'Value',
+      legend: 'Temp F\u00B0',
       legendOffset: '-40',
       legendPosition: 'middle'
     }}
-    colors={{ scheme: 'nivo' }}
+    colors={{ scheme: 'dark2' }}
     pointSize={10}
     pointBorderWidth={2}
     pointLabelYOffset={2}
     useMesh={true}
+    theme={{
+      // https://nivo.rocks/guides/theming/    for seeing everything in the themes
+      background:  "#282c34"
+    }}
   />
+  )
 }
+
+
+
+
+
 
 
 function MyButton() {
@@ -40,6 +54,40 @@ function MyButton() {
     <button>I'm a button</button>
   )
 }
+
+
+
+function App2() {
+  const [chartData, setChartData] = useState([]);
+
+  useEffect(() => {
+    axios.get("/mock-data.json")
+      .then((res) => {
+        const rawData = res.data;
+
+        const formatted = [{
+          id: "air-temp-data",
+          data: rawData.map(point => ({
+            x: new Date(point.time).toLocaleTimeString(),
+            y: point.value
+          }))
+        }];
+
+      setChartData(formatted);
+  })
+  .catch((err) => console.error("Error fetching data:", err));
+  }, []);
+
+  return (
+    <div className="App">
+      <h2>InfluxDB Sensor Data</h2>
+      <div className='chart-container'></div>
+      <MyLineChart data={chartData} />
+    </div>
+  );
+}
+
+
 
 
 
@@ -65,4 +113,4 @@ function App() {
   );
 }
 
-export default App;
+export default App2;
