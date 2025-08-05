@@ -7,3 +7,8 @@ mosquitto-docker/config/certs/*
 mosquitto-docker/config/passwd
 
 influxdb/data/*
+
+/web-backend/.venv
+
+web-frontend/web-frontend/node_modules
+web-frontend/web-frontend/dist/
