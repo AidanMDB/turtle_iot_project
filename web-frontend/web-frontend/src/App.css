@@ -38,8 +38,24 @@
 }
 
 
-.chart-container {
-  height: 400px;
-  width: 400px;
-  color: #282c34;
+.graph-recent-container {
+  display: flex;
+  align-items: center;
+  height: 200px;
+  width: 1000px;
+  background-color: #282c34;
+}
+
+
+.recent-reading-container {
+  width: 20%;
+  background-color: #282c34;
+  color: white;
+}
+
+
+.line-graph-container {
+  flex: 1;
+  height: 100%;
+  display: flex;
 }
